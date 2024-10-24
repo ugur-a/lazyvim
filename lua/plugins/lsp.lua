@@ -2,7 +2,8 @@ return {
   "neovim/nvim-lspconfig",
   opts = {
     servers = {
-      lua_ls = {},
+      -- disable all the autostarts for direnv.nvim to work
+      lua_ls = { autostart = false },
     },
   },
 }

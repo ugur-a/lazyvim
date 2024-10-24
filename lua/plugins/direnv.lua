@@ -1,5 +1,14 @@
 return {
-  { "actionshrimp/direnv.nvim" },
+  {
+    "actionshrimp/direnv.nvim",
+    opts = {
+      async = true,
+      on_direnv_finished = function()
+        vim.cmd("LspStart")
+      end,
+    },
+  },
+
   {
     "mrcjkb/rustaceanvim",
     opts = {
@@ -7,9 +16,15 @@ return {
         -- Start lsp only after direnv.nvim is finished
         auto_attach = function(bufnr)
           vim.api.nvim_create_autocmd("User", {
-            pattern = { "DirenvLoaded", "DirenvNotFound" },
+            group = "direnv-nvim",
+            pattern = {
+              "DirenvReady",
+              "DirenvNotFound",
+            },
             callback = function()
-              require("rustaceanvim.lsp").start(bufnr)
+              if vim.bo.filetype == "rust" then
+                require("rustaceanvim.lsp").start(bufnr)
+              end
             end,
             once = true,
           })
